@@ -1,5 +1,5 @@
 # ---- 設定 ----
-KEY_FILE      ?= ~/.ssh/id_rsa
+KEY_FILE      ?= terraform/id_rsa.pem
 SSH_USER      ?= ec2-user
 PING_INTERVAL ?= 50s
 

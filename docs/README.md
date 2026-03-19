@@ -3,18 +3,14 @@
 ## 事前準備
 
 ```bash
-# terraform.tfvars を作成
+# terraform.tfvars を作成（key_name は不要。キーペアは Terraform が自動生成する）
 cat > terraform/terraform.tfvars <<EOF
-key_name         = "your-key-pair-name"   # AWS のキーペア名
-alb_idle_timeout = 60                     # 検証したい timeout 値 (秒)
+alb_idle_timeout = 60   # 検証したい timeout 値 (秒)
 EOF
 ```
 
-SSH キーのパスがデフォルト (`~/.ssh/id_rsa`) と異なる場合は環境変数で上書きします:
-
-```bash
-export KEY_FILE=~/.ssh/your-key.pem
-```
+SSH 秘密鍵は `make infra-up` 後に `terraform/id_rsa.pem` へ自動保存される。
+デフォルトの `KEY_FILE` は `terraform/id_rsa.pem` を参照するため、通常は変更不要。
 
 ## 手順
 

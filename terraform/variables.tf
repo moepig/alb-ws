@@ -22,11 +22,6 @@ variable "instance_type" {
   default     = "t3.micro"
 }
 
-variable "key_name" {
-  description = "EC2 key pair name for SSH access"
-  type        = string
-}
-
 variable "ssh_cidr_blocks" {
   description = "CIDR blocks allowed to SSH into the EC2 instance"
   type        = list(string)

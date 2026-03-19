@@ -17,3 +17,8 @@ output "websocket_url" {
   description = "WebSocket endpoint via ALB"
   value       = "ws://${aws_lb.main.dns_name}/ws"
 }
+
+output "private_key_path" {
+  description = "Path to the generated SSH private key"
+  value       = local_sensitive_file.private_key.filename
+}

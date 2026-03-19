@@ -4,6 +4,14 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0"
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.0"
+    }
   }
 }
 
@@ -150,6 +158,23 @@ resource "aws_lb_listener" "http" {
   }
 }
 
+# Key pair
+resource "tls_private_key" "main" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "main" {
+  key_name   = "${var.prefix}-key"
+  public_key = tls_private_key.main.public_key_openssh
+}
+
+resource "local_sensitive_file" "private_key" {
+  content         = tls_private_key.main.private_key_pem
+  filename        = "${path.module}/id_rsa.pem"
+  file_permission = "0600"
+}
+
 # EC2
 data "aws_ami" "amazon_linux" {
   most_recent = true
@@ -166,13 +191,15 @@ resource "aws_instance" "main" {
   instance_type          = var.instance_type
   subnet_id              = aws_subnet.public[0].id
   vpc_security_group_ids = [aws_security_group.ec2.id]
-  key_name               = var.key_name
+  key_name               = aws_key_pair.main.key_name
 
   user_data = <<-EOF
     #!/bin/bash
     yum update -y
     yum install -y golang git
-    echo "Go installed: $(go version)" >> /var/log/ws-setup.log
+    git clone https://github.com/moepig/alb-ws.git /home/ec2-user/alb-ws
+    chown -R ec2-user:ec2-user /home/ec2-user/alb-ws
+    echo "Setup complete" >> /var/log/ws-setup.log
   EOF
 
   tags = { Name = "${var.prefix}-ec2" }

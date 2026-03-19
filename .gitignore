@@ -28,4 +28,12 @@ go.work
 server/ws-server
 client/ws-client
 
+# Terraform generated files
+terraform/id_rsa.pem
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/terraform.tfvars
+
 # End of https://www.toptal.com/developers/gitignore/api/go
